@@ -13,20 +13,15 @@ const WEEK_DAYS = [
 ];
 
 function generateSchedule(dentists, bookings, interval) {
-    interval = parseDate(interval)
   var intervalLength = (interval.to - interval.from) / DAY;
-  console.log(intervalLength);
   var generalSchedule = [];
 
   for (let j = 0; j < intervalLength; j++) {
     var schedule = new Map();
     var date = new Date(interval.from.getTime() + j * DAY);
 
-    // filter bookings according to their date
-    var filteredBookings = filterBookings(bookings, date);
-
     dentists.forEach((dentist) => {
-      pushDentistAvailableSlots(schedule, dentist, filteredBookings, date);
+      pushDentistAvailableSlots(schedule, dentist, bookings, date);
     });
 
     const stringDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
@@ -43,25 +38,7 @@ function generateSchedule(dentists, bookings, interval) {
   return generalSchedule;
 }
 
-function parseDate(stringInterval) {
-  return JSON.parse(stringInterval, (key, value) => {
-    if (key) {
-      return new Date(value);
-    } else {
-      return value;
-    }
-  });
-}
 
-function filterBookings(bookings, date) {
-  var filteredBookings = [];
-  bookings.map((booking) => {
-    if (booking.date.toString() === date.toString()) {
-      filteredBookings.push(booking);
-    }
-  });
-  return filteredBookings;
-}
 
 // idea for sorting the object keys source: https://bobbyhadz.com/blog/javascript-sort-object-keys
 function sortTimeSlots(unsortedSchedule) {
@@ -94,7 +71,7 @@ function pushDentistAvailableSlots(schedule, dentist, bookings, date) {
       var alreadyTakenHalf = 0;
 
       bookings.map((booking) => {
-        if (booking.dentistsid == dentist.id && booking.time == time) {
+        if (String(booking.dentistid) === String(dentist._id) && booking.time == time) {
           alreadyTaken += 1;
         }
 
