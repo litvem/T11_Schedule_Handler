@@ -26,7 +26,7 @@ mqttClient.on("message", (topic, message) => {
 
   switch (topic) {
     case sub_topics.initialSchedule:
-      const interval = parseDate(message)
+      const interval = parseDate(message);
       publishInitialSchedule(interval);
     // fetch bookings from this interval
   }
@@ -36,21 +36,23 @@ async function publishInitialSchedule(interval) {
   const bookings = await Booking.find({
     date: { $gte: interval.from, $lte: interval.to },
   });
-  const dentists = data.dentists
-  const initialSchedule = filter.generateSchedule(dentists, bookings, interval)
+  const dentists = data.dentists;
+  const initialSchedule = filter.generateSchedule(dentists, bookings, interval);
 
-  mqttClient.publish(pub_topics.initialSchedule, JSON.stringify(initialSchedule))
-  console.log(dentists);
+  mqttClient.publish(
+    pub_topics.initialSchedule,
+    JSON.stringify(initialSchedule)
+  );
 }
 
 function parseDate(stringInterval) {
-    return JSON.parse(stringInterval, (key, value) => {
-      if (key) {
-        return new Date(value);
-      } else {
-        return value;
-      }
-    });
-  }
+  return JSON.parse(stringInterval, (key, value) => {
+    if (key) {
+      return new Date(value);
+    } else {
+      return value;
+    }
+  });
+}
 
 module.exports = mqttClient;

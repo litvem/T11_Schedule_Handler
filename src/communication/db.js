@@ -5,7 +5,7 @@ const Dentist = require("../models/dentist.js");
 
 var data = {
   dentists: [],
-  bookings: []
+  bookings: [],
 };
 
 mongoose.connect(
@@ -17,16 +17,13 @@ mongoose.connect(
       process.exit(1);
     }
     console.log("Connected to Mongo database: dentistimoDB");
-    fetchData()
+    fetchData();
   }
 );
 
-
 async function fetchData() {
-
-  data.dentists = await Dentist.find({})
-  data.bookings = await Booking.find({})
-
+  data.dentists = await Dentist.find({});
+  data.bookings = await Booking.find({});
 }
 
-module.exports = {mongoose, data};
+module.exports = { mongoose, data };

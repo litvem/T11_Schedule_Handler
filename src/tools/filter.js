@@ -38,8 +38,6 @@ function generateSchedule(dentists, bookings, interval) {
   return generalSchedule;
 }
 
-
-
 // idea for sorting the object keys source: https://bobbyhadz.com/blog/javascript-sort-object-keys
 function sortTimeSlots(unsortedSchedule) {
   const sortedSchedule = Object.keys(unsortedSchedule)
@@ -71,7 +69,10 @@ function pushDentistAvailableSlots(schedule, dentist, bookings, date) {
       var alreadyTakenHalf = 0;
 
       bookings.map((booking) => {
-        if (String(booking.dentistid) === String(dentist._id) && booking.time == time) {
+        if (
+          String(booking.dentistid) === String(dentist._id) &&
+          booking.time == time
+        ) {
           alreadyTaken += 1;
         }
 
