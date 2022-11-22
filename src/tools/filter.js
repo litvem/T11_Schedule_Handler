@@ -24,7 +24,10 @@ function generateSchedule(dentists, bookings, interval) {
       pushDentistAvailableSlots(schedule, dentist, bookings, date);
     });
 
-    const stringDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    // getMonth() returns a zero base value, January is 0, so we need to add 1 one to provide the correct date. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMonth
+    const stringDate = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}`;
     const unsortedSchedule = Object.fromEntries(schedule);
 
     const sortedSchedule = sortTimeSlots(unsortedSchedule);
