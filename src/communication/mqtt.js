@@ -8,10 +8,12 @@ const PORT = 1883;
 
 const sub_topics = {
   initialSchedule: "schedule/initial/request",
+  scheduleRequest: "schedule/request",
 };
 
 const pub_topics = {
   initialSchedule: "schedule/initial/response",
+  scheduleResponse: "schedule/response",
 };
 
 const mqttClient = mqtt.connect(`${HOST}:${PORT}`);
@@ -53,6 +55,13 @@ function parseDate(stringInterval) {
       return value;
     }
   });
+}
+
+function getScheduleResponseTopic(message) {
+  message = JSON.parse(message)
+  var intervalString = message.from + "-" + message.to;
+  var topic = `${pub_topics.scheduleResponse}/${intervalString}`;
+  return topic;
 }
 
 module.exports = mqttClient;
