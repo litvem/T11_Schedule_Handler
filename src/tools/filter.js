@@ -6,7 +6,7 @@ const WEEK_DAYS = [
   "sunday",
   "monday",
   "tuesday",
-  "wenesday",
+  "wednesday",
   "thursday",
   "friday",
   "saturday",
