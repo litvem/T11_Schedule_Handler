@@ -21,6 +21,7 @@ const mqttClient = mqtt.connect(`${HOST}:${PORT}`);
 mqttClient.on("connect", () => {
   console.log("Schedule handler connected to MQTT broker");
   mqttClient.subscribe(sub_topics.initialSchedule);
+  mqttClient.subscribe(sub_topics.scheduleRequest);
 });
 
 mqttClient.on("message", (topic, message) => {
@@ -30,6 +31,12 @@ mqttClient.on("message", (topic, message) => {
     case sub_topics.initialSchedule:
       var interval = parseDate(message);
       publishSchedule(interval, pub_topics.initialSchedule);
+      break;
+
+    case sub_topics.scheduleRequest:
+      var topic = getScheduleResponseTopic(message);
+      var interval = parseDate(message);
+      publishSchedule(interval, topic);
       break;
   }
 });
@@ -56,7 +63,7 @@ function parseDate(stringInterval) {
 }
 
 function getScheduleResponseTopic(message) {
-  message = JSON.parse(message)
+  message = JSON.parse(message);
   var intervalString = message.from + "-" + message.to;
   var topic = `${pub_topics.scheduleResponse}/${intervalString}`;
   return topic;
