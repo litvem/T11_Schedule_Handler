@@ -3,6 +3,10 @@ const { db, data } = require("./db.js");
 const Booking = require("../models/booking.js");
 const filter = require("../tools/filter.js");
 
+const options = {
+  qos: 1
+}
+
 const HOST = "mqtt://localhost";
 const PORT = 1883;
 
@@ -18,7 +22,7 @@ const mqttClient = mqtt.connect(`${HOST}:${PORT}`);
 
 mqttClient.on("connect", () => {
   console.log("Schedule handler connected to MQTT broker");
-  mqttClient.subscribe(sub_topics.initialSchedule);
+  mqttClient.subscribe(sub_topics.initialSchedule, options);
 });
 
 mqttClient.on("message", (topic, message) => {
@@ -41,7 +45,8 @@ async function publishInitialSchedule(interval) {
 
   mqttClient.publish(
     pub_topics.initialSchedule,
-    JSON.stringify(initialSchedule)
+    JSON.stringify(initialSchedule),
+    options
   );
 }
 
