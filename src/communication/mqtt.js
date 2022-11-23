@@ -26,7 +26,7 @@ mqttClient.on("connect", () => {
   console.log("Schedule handler connected to MQTT broker");
 
   mqttClient.subscribe(sub_topics.initialSchedule, options);
-  mqttClient.subscribe(sub_topics.scheduleRequest);
+  mqttClient.subscribe(sub_topics.scheduleRequest, options);
 
 });
 
@@ -53,9 +53,9 @@ async function publishSchedule(interval, topic) {
     date: { $gte: interval.from, $lte: interval.to },
   });
   const dentists = data.dentists;
-  const initialSchedule = filter.generateSchedule(dentists, bookings, interval);
+  const schedule = filter.generateSchedule(dentists, bookings, interval);
 
-  mqttClient.publish(topic, JSON.stringify(initialSchedule), options);
+  mqttClient.publish(topic, JSON.stringify(schedule), options);
 }
 
 function parseDate(stringInterval) {
