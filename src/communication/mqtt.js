@@ -4,8 +4,10 @@ const Booking = require("../models/booking.js");
 const filter = require("../tools/filter.js");
 
 const options = {
-  qos: 1
-}
+  qos: 1,
+};
+
+const schedules = new Map();
 
 const HOST = "mqtt://localhost";
 const PORT = 1883;
@@ -35,11 +37,27 @@ mqttClient.on("message", (topic, message) => {
 
   switch (topic) {
     case sub_topics.initialSchedule:
+      if (schedules.has(message)) {
+        schedules.set(message, schedules.get(message) + 1);
+      } else {
+        schedules.set(message, 1);
+      }
+
+      console.log(schedules);
+
       var interval = parseDate(message);
       publishSchedule(interval, pub_topics.initialSchedule);
       break;
 
     case sub_topics.scheduleRequest:
+      if (schedules.has(message)) {
+        schedules.set(message, schedules.get(message) + 1);
+      } else {
+        schedules.set(message, 1);
+      }
+
+      console.log(schedules);
+
       var topic = getScheduleResponseTopic(message);
       var interval = parseDate(message);
       publishSchedule(interval, topic);
