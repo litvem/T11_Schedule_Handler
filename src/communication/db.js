@@ -1,4 +1,5 @@
 const { default: mongoose } = require("mongoose");
+require('dotenv').config({path: "../.env"})
 
 const Booking = require("../models/booking.js");
 const Dentist = require("../models/dentist.js");
@@ -22,6 +23,14 @@ mongoose.connect(
     fetchData();
   }
 );
+
+Booking.watch().on("change", data => {
+  console.log(data)
+})
+
+Dentist.watch().on("change", data => {
+  console.log(data)
+})
 
 async function fetchData() {
   data.dentists = await Dentist.find({});
