@@ -76,10 +76,21 @@ async function publishSchedule(interval, topic) {
   mqttClient.publish(topic, JSON.stringify(schedule), options);
 }
 
+/**
+ * The input is a string with the follwing format: {"from": "<yyyy-mm-dd>", "to":"<yyyy-mm-dd>"}
+ * @param {String} stringInterval
+ * @returns an object with the following format: {from: <Date>, to: <Date>} where the hours for the
+ * "from" date is set to midnight and the hours for the "to" date to midnight
+ */
 function parseDate(stringInterval) {
   return JSON.parse(stringInterval, (key, value) => {
-    if (key) {
+    if (key == "from") {
       return new Date(value);
+    } else if (key == "to") {
+      value = new Date(value)
+      value.setHours(23, 59, 59)
+      console.log(value)
+      return value
     } else {
       return value;
     }
