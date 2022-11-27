@@ -25,9 +25,7 @@ function generateSchedule(dentists, bookings, interval) {
     });
 
     // getMonth() returns a zero base value, January is 0, so we need to add 1 one to provide the correct date. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMonth
-    const stringDate = `${date.getFullYear()}-${
-      date.getMonth() + 1
-    }-${date.getDate()}`;
+    const stringDate = getStringDate(date)
     const unsortedSchedule = Object.fromEntries(schedule);
 
     const sortedSchedule = sortTimeSlots(unsortedSchedule);
@@ -109,4 +107,15 @@ function pushDentistAvailableSlots(schedule, dentist, bookings, date) {
   }
 }
 
-module.exports = { generateSchedule };
+/**
+ * 
+ * @param {Date} date 
+ * @returns String of the date in the yyyy-mm-dd format
+ */
+
+function getStringDate(date) {
+  // getMonth() returns a zero base value, January is 0, so we need to add 1 one to provide the correct date. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMonth
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+}
+
+module.exports = { generateSchedule, getStringDate };
