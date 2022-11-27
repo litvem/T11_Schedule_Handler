@@ -30,6 +30,12 @@ mqttClient.on("connect", () => {
   mqttClient.subscribe(sub_topics.initialSchedule, options);
   mqttClient.subscribe(sub_topics.scheduleRequest, options);
 
+  Booking.watch().on("change", (data) => {
+    if (data.operationType === "insert") {
+      const date = new Date(data.fullDocument.date);
+      publishUpdatedSchedules(schedules, date);
+    }
+  });
 });
 
 mqttClient.on("message", (topic, message) => {
@@ -37,8 +43,6 @@ mqttClient.on("message", (topic, message) => {
     message = message.toString();
   }
 
-  switch (topic) {
-    case sub_topics.initialSchedule:
   if (schedules.has(message)) {
     schedules.set(message, schedules.get(message) + 1);
   } else {
@@ -107,6 +111,27 @@ function getScheduleResponseTopic(stringInterval) {
   var intervalString = stringInterval.from + "-" + stringInterval.to;
   var topic = `${pub_topics.scheduleResponse}/${intervalString}`;
   return topic;
+}
+
+/**
+ *
+ * @param {Map} schedules
+ * @param {Date} date
+ */
+function publishUpdatedSchedules(schedules, date) {
+  for (const key of schedules.keys()) {
+    let interval = parseDate(key);
+
+    if (date >= interval.from && date < interval.to) {
+      const stringInterval = {
+        from: filter.getStringDate(interval.from),
+        to: filter.getStringDate(interval.to),
+      };
+
+      var topic = getScheduleResponseTopic(stringInterval);
+      publishSchedule(interval, topic);
+    }
+  }
 }
 
 module.exports = mqttClient;

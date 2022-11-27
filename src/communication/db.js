@@ -24,14 +24,6 @@ mongoose.connect(
   }
 );
 
-Booking.watch().on("change", data => {
-  console.log(data)
-})
-
-Dentist.watch().on("change", data => {
-  console.log(data)
-})
-
 async function fetchData() {
   data.dentists = await Dentist.find({});
   data.bookings = await Booking.find({});
