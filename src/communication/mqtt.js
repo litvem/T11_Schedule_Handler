@@ -33,16 +33,20 @@ mqttClient.on("connect", () => {
 });
 
 mqttClient.on("message", (topic, message) => {
-  message = message.toString();
+  if (message) {
+    message = message.toString();
+  }
 
   switch (topic) {
     case sub_topics.initialSchedule:
-      if (schedules.has(message)) {
-        schedules.set(message, schedules.get(message) + 1);
-      } else {
-        schedules.set(message, 1);
-      }
+  if (schedules.has(message)) {
+    schedules.set(message, schedules.get(message) + 1);
+  } else {
+    schedules.set(message, 1);
+  }
 
+  switch (topic) {
+    case sub_topics.initialSchedule:
       console.log(schedules);
 
       var interval = parseDate(message);
@@ -50,12 +54,6 @@ mqttClient.on("message", (topic, message) => {
       break;
 
     case sub_topics.scheduleRequest:
-      if (schedules.has(message)) {
-        schedules.set(message, schedules.get(message) + 1);
-      } else {
-        schedules.set(message, 1);
-      }
-
       console.log(schedules);
 
       var topic = getScheduleResponseTopic(message);
