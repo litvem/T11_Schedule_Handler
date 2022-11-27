@@ -95,9 +95,16 @@ function parseDate(stringInterval) {
   });
 }
 
-function getScheduleResponseTopic(message) {
-  message = JSON.parse(message);
-  var intervalString = message.from + "-" + message.to;
+/**
+ * Can receive both a string or object containg the from and to dates with the yyyy-mm-dd format
+ * @param {String || Object} stringInterval
+ * @returns the topic schedule/response/yyyy-mm-dd-yyyy-mm-dd
+ */
+function getScheduleResponseTopic(stringInterval) {
+  if (typeof stringInterval === "string") {
+    stringInterval = JSON.parse(stringInterval);
+  }
+  var intervalString = stringInterval.from + "-" + stringInterval.to;
   var topic = `${pub_topics.scheduleResponse}/${intervalString}`;
   return topic;
 }
