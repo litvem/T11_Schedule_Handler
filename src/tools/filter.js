@@ -79,7 +79,8 @@ function pushDentistAvailableSlots(schedule, dentist, bookings, date) {
           alreadyTaken += 1;
         }
 
-        if (booking.dentistsid == dentist.id && booking.time == timeHalf) {
+        if (String(booking.dentistid) === String(dentist._id) &&
+        booking.time == timeHalf) {
           alreadyTakenHalf += 1;
         }
       });
