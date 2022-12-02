@@ -2,6 +2,7 @@ const mqtt = require("mqtt");
 const { db, data } = require("./db.js");
 const Booking = require("../models/booking.js");
 const filter = require("../tools/filter.js");
+const utils = require("../tools/utils.js")
 
 const options = {
   qos: 1,
@@ -43,14 +44,10 @@ mqttClient.on("message", (topic, message) => {
     message = message.toString();
   }
 
-  if (schedules.has(message)) {
-    schedules.set(message, schedules.get(message) + 1);
-  } else {
-    schedules.set(message, 1);
-  }
-
   switch (topic) {
     case sub_topics.initialSchedule:
+
+      utils.addToMap(schedules, message)
       console.log(schedules);
 
       var interval = parseDate(message);
@@ -58,11 +55,21 @@ mqttClient.on("message", (topic, message) => {
       break;
 
     case sub_topics.scheduleRequest:
+
+      var intervals = JSON.parse(message)
+
+      var previousIntervalString = JSON.stringify(intervals.previousInterval)
+      var newIntervalString = JSON.stringify(intervals.newInterval)
+
+      utils.deductFromMap(schedules, previousIntervalString)
+      utils.addToMap(schedules, newIntervalString)
+      
       console.log(schedules);
 
-      var topic = getScheduleResponseTopic(message);
-      var interval = parseDate(message);
-      publishSchedule(interval, topic);
+      var topic = getScheduleResponseTopic(newIntervalString);
+      var newInterval = parseDate(newIntervalString);
+      
+      publishSchedule(newInterval, topic);
       break;
   }
 });
