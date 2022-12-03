@@ -1,5 +1,4 @@
 const { default: mongoose } = require("mongoose");
-require('dotenv').config({path: "../.env"})
 
 const Booking = require("../models/booking.js");
 const Dentist = require("../models/dentist.js");
