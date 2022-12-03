@@ -118,4 +118,4 @@ function getStringDate(date) {
   return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 }
 
-module.exports = { generateSchedule, getStringDate };
+module.exports = { generateSchedule };

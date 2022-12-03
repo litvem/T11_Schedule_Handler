@@ -130,12 +130,7 @@ function publishUpdatedSchedules(schedules, date) {
     let interval = parseDate(key);
 
     if (date >= interval.from && date < interval.to) {
-      const stringInterval = {
-        from: filter.getStringDate(interval.from),
-        to: filter.getStringDate(interval.to),
-      };
-
-      var topic = getScheduleResponseTopic(stringInterval);
+      var topic = getScheduleResponseTopic(key);
       publishSchedule(interval, topic);
     }
   }
