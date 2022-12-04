@@ -98,7 +98,6 @@ function parseDate(stringInterval) {
     } else if (key == "to") {
       value = new Date(value)
       value.setHours(23, 59, 59)
-      console.log(value)
       return value
     } else {
       return value;
