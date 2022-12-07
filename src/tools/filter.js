@@ -71,12 +71,14 @@ function pushDentistAvailableSlots(schedule, dentist, bookings, date) {
       bookings.map((booking) => {
         if (
           String(booking.dentistid) === String(dentist._id) &&
+          booking.date.getTime() == date.getTime() &&
           booking.time == time
         ) {
           alreadyTaken += 1;
         }
 
         if (String(booking.dentistid) === String(dentist._id) &&
+        booking.date.getTime() == date.getTime() &&
         booking.time == timeHalf) {
           alreadyTakenHalf += 1;
         }
