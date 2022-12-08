@@ -110,14 +110,21 @@ function pushDentistAvailableSlots(schedule, dentist, bookings, date) {
 }
 
 /**
- * 
+ * reference: https://bobbyhadz.com/blog/javascript-format-date-yyyymmdd
  * @param {Date} date 
  * @returns String of the date in the yyyy-mm-dd format
  */
 
 function getStringDate(date) {
   // getMonth() returns a zero base value, January is 0, so we need to add 1 one to provide the correct date. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMonth
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  let month = date.getMonth() + 1
+  let day = date.getDate()
+
+  //ensures that month and day will have 2 digits
+  let formatedMonth = month.toString().padStart(2, 0)
+  let formatedDay = day.toString().padStart(2,0)
+
+  return `${date.getFullYear()}-${formatedMonth}-${formatedDay}`;
 }
 
 module.exports = { generateSchedule };
