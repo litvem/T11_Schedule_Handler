@@ -24,10 +24,7 @@ function generateSchedule(dentists, bookings, interval) {
       pushDentistAvailableSlots(schedule, dentist, bookings, date);
     });
 
-    // getMonth() returns a zero base value, January is 0, so we need to add 1 one to provide the correct date. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMonth
-    const stringDate = `${date.getFullYear()}-${
-      date.getMonth() + 1
-    }-${date.getDate()}`;
+    const stringDate = getStringDate(date)
     const unsortedSchedule = Object.fromEntries(schedule);
 
     const sortedSchedule = sortTimeSlots(unsortedSchedule);
@@ -74,12 +71,14 @@ function pushDentistAvailableSlots(schedule, dentist, bookings, date) {
       bookings.map((booking) => {
         if (
           String(booking.dentistid) === String(dentist._id) &&
+          booking.date.getTime() == date.getTime() &&
           booking.time == time
         ) {
           alreadyTaken += 1;
         }
 
         if (String(booking.dentistid) === String(dentist._id) &&
+        booking.date.getTime() == date.getTime() &&
         booking.time == timeHalf) {
           alreadyTakenHalf += 1;
         }
@@ -108,6 +107,24 @@ function pushDentistAvailableSlots(schedule, dentist, bookings, date) {
       }
     }
   }
+}
+
+/**
+ * reference: https://bobbyhadz.com/blog/javascript-format-date-yyyymmdd
+ * @param {Date} date 
+ * @returns String of the date in the yyyy-mm-dd format
+ */
+
+function getStringDate(date) {
+  // getMonth() returns a zero base value, January is 0, so we need to add 1 one to provide the correct date. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getMonth
+  let month = date.getMonth() + 1
+  let day = date.getDate()
+
+  //ensures that month and day will have 2 digits
+  let formatedMonth = month.toString().padStart(2, 0)
+  let formatedDay = day.toString().padStart(2,0)
+
+  return `${date.getFullYear()}-${formatedMonth}-${formatedDay}`;
 }
 
 module.exports = { generateSchedule };

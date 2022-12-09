@@ -8,8 +8,10 @@ var data = {
   bookings: [],
 };
 
+const uri = process.env.MONGO_ATLAS_URI
+
 mongoose.connect(
-  "mongodb://localhost:27017/dentistimoDB",
+  uri,
   { useNewUrlParser: true },
   (err) => {
     if (err) {
