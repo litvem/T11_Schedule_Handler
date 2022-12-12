@@ -85,12 +85,13 @@ Schedule containing the available slots for the requested time interval
 
 ### **<ins>SetUp</ins>**
 
-| Description | Command |
+| Description | Command/example |
 |-------|---|
-| Clone this repository | <ins>Option 1.</ins><br> Download as a zip file<br> <ins>Option 2.</ins><br>`git clone <reponlink>`|
+| Clone this repository | <ins>Option 1.</ins><br> Download as a zip file<br> <ins>Option 2.</ins><br>`git clone git@git.chalmers.se:courses/dit355/dit356-2022/t-11/t11-schedule-handler.git`|
 | Open terminal and navigate to mosquitto root folder |  `mosquitto -c mosquitto.conf -v ` |
-|Open the repo in javascript IDE and open the terminal in the IDE. Navigate to the server folder | `npm install` |
-
+|Open the repo in javascript IDE and open the terminal in the IDE and install the dependencies| `npm install` |
+|Create a .env file in the project root folder to store the atlas cluster uri in the MONGO_ATLAS_URI enviroment variable | MONGO_ATLAS_URI=\<altlas cluster URI> |
+|Start the component | `npm run dev`
 
 
 
