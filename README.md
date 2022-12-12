@@ -12,7 +12,7 @@ clinics and the existing bookings.
 - generate the schedule for the specified interval with the availables
 
 - publish the schedules to the schedule/response/\<interval>
-- monitor for new bookings ans publish updated schedules to their respective topics
+- monitor for new booking insertions in the database and publish updated schedules to their respective topics
 
 ## **Data flow**
 
