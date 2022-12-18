@@ -2,7 +2,7 @@ const mqtt = require("mqtt");
 const { db, data } = require("./db.js");
 const Booking = require("../models/booking.js");
 const filter = require("../tools/filter.js");
-const utils = require("../tools/utils.js")
+const utils = require("../tools/utils.js");
 
 const options = {
   qos: 1,
@@ -16,6 +16,7 @@ const PORT = 1883;
 const sub_topics = {
   initialSchedule: "schedule/initial/request",
   scheduleRequest: "schedule/request",
+  removeInterval: "schedule/remove/client",
 };
 
 const pub_topics = {
@@ -30,6 +31,7 @@ mqttClient.on("connect", () => {
 
   mqttClient.subscribe(sub_topics.initialSchedule, options);
   mqttClient.subscribe(sub_topics.scheduleRequest, options);
+  mqttClient.subscribe(sub_topics.removeInterval);
 
   Booking.watch().on("change", (data) => {
     if (data.operationType === "insert") {
@@ -46,8 +48,7 @@ mqttClient.on("message", (topic, message) => {
 
   switch (topic) {
     case sub_topics.initialSchedule:
-
-      utils.addToMap(schedules, message)
+      utils.addToMap(schedules, message);
       console.log(schedules);
 
       var interval = parseDate(message);
@@ -55,21 +56,24 @@ mqttClient.on("message", (topic, message) => {
       break;
 
     case sub_topics.scheduleRequest:
+      var intervals = JSON.parse(message);
 
-      var intervals = JSON.parse(message)
+      var previousIntervalString = JSON.stringify(intervals.previousInterval);
+      var newIntervalString = JSON.stringify(intervals.newInterval);
 
-      var previousIntervalString = JSON.stringify(intervals.previousInterval)
-      var newIntervalString = JSON.stringify(intervals.newInterval)
+      utils.deductFromMap(schedules, previousIntervalString);
+      utils.addToMap(schedules, newIntervalString);
 
-      utils.deductFromMap(schedules, previousIntervalString)
-      utils.addToMap(schedules, newIntervalString)
-      
       console.log(schedules);
 
       var topic = getScheduleResponseTopic(newIntervalString);
       var newInterval = parseDate(newIntervalString);
-      
+
       publishSchedule(newInterval, topic);
+      break;
+
+    case sub_topics.removeInterval:
+      utils.deductFromMap(schedules, message);
       break;
   }
 });
@@ -96,9 +100,9 @@ function parseDate(stringInterval) {
     if (key == "from") {
       return new Date(value);
     } else if (key == "to") {
-      value = new Date(value)
-      value.setHours(23, 59, 59)
-      return value
+      value = new Date(value);
+      value.setHours(23, 59, 59);
+      return value;
     } else {
       return value;
     }
