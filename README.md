@@ -18,7 +18,7 @@ It keeps track of the monitored time intervals so it only publishes the necessar
 ## **Data flow**
 
 ### **<ins>Input Data</ins>**
-The input data are the clinics data, bookings and time interval. The intervals are stored in memory to keep track of which intervals are being watched by users. The component watches for insertion of bookings in the database and publishes updated schedules to the time intervals affected by the new booking.
+The input data are the clinics data, bookings and time interval. The intervals are stored in memory to keep track of which intervals are being watched by users. The component watches for insertion of bookings in the database and publishes updated schedules to the time intervals affected by the new booking. This monitoring is done via a change stream in the mongo db atlas cluster.
 
 >Example Schedule Request
 ```
