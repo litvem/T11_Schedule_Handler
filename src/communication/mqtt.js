@@ -139,4 +139,49 @@ function publishUpdatedSchedules(schedules, date) {
   }
 }
 
+function validateScheduleRequest(message) {
+  try {
+    var object = JSON.parse(message);
+    var previousInterval = object.previousInterval;
+    var newInterval = object.newInterval;
+
+    if (previousInterval && newInterval) {
+      var previousFrom = new Date(previousInterval.from);
+      var previousTo = new Date(previousInterval.to);
+      var newFrom = new Date(newInterval.from);
+      var newTo = new Date(newInterval.to);
+      if (
+        !isNaN(previousFrom) &&
+        !isNaN(previousTo) &&
+        !isNaN(newFrom) &&
+        !isNaN(newTo)
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  } catch (exception) {
+    return false;
+  }
+}
+
+function validateSimpleInterval(message) {
+  try {
+    var object = JSON.parse(message);
+
+    if (object.from && object.to) {
+      var from = new Date(object.from);
+      var to = new Date(object.to);
+      if (!isNaN(from) && !isNaN(to)) {
+        return true;
+      }
+    }
+
+    return false;
+  } catch (exception) {
+    return false;
+  }
+}
+
 module.exports = mqttClient;
