@@ -23,7 +23,7 @@ The input data are the clinics data, bookings and time interval. The intervals a
 ```
 {
   "previousInterval": {
-    "from": "2022-12-3",
+    "from": "2022-12-03",
     "to": "2022-12-10"
   },
   "newInterval": {
@@ -31,6 +31,13 @@ The input data are the clinics data, bookings and time interval. The intervals a
     "to": "2022-12-17"
   }
 }
+```
+>Example Initial Schedle request
+```
+  {
+    "from": "2022-12-03",
+    "to": "2022-12-10"
+  }
 ```
 ### **<ins>Output Data</ins>**
 Schedule containing the available slots for the requested time interval
