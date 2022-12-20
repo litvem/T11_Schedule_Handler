@@ -6,6 +6,7 @@
 This component is responsible for generating schedules for time intervals of interest using the opening hours of the 
 clinics and the existing bookings.
 
+It keeps track of the monitored time intervals so it only publishes the necessary schedules to reduce the load on the broker. To do so, the component has a map containing the time intervals that are being watched by users and updates the map accordingly.
 ## **Responsability**
 
 - listen to schedule/request topic expecting a previous and a new interval in the message
@@ -17,7 +18,7 @@ clinics and the existing bookings.
 ## **Data flow**
 
 ### **<ins>Input Data</ins>**
-The input data are the clinics data, bookings and time interval. The intervals are stored in memory to keep track of which intervals are being watched by users. The component watches for insertion of bookings in the database and publish updated schedules to the time intervals affected by the new booking.
+The input data are the clinics data, bookings and time interval. The intervals are stored in memory to keep track of which intervals are being watched by users. The component watches for insertion of bookings in the database and publishes updated schedules to the time intervals affected by the new booking.
 
 >Example Schedule Request
 ```
@@ -32,7 +33,7 @@ The input data are the clinics data, bookings and time interval. The intervals a
   }
 }
 ```
->Example Initial Schedle request
+>Example Initial Schedle request and Interval to be removed from the intervals map
 ```
   {
     "from": "2022-12-03",
