@@ -7,10 +7,10 @@ This component is responsible for generating schedules for time intervals of int
 clinics and the existing bookings.
 
 It keeps track of the monitored time intervals so it only publishes the necessary schedules to reduce the load on the broker. To do so, the component has a map containing the time intervals that are being watched by users and updates the map accordingly.
-## **Responsability**
+## **Responsibility**
 
 - listen to schedule/request topic expecting a previous and a new interval in the message
-- generate the schedule for the specified interval with the availables
+- generate the schedule for the specified interval with the available
 
 - publish the schedules to the schedule/response/\<interval>
 - monitor for new booking insertions in the database and publish updated schedules to their respective topics
@@ -33,7 +33,7 @@ The input data are the clinics data, bookings and time interval. The intervals a
   }
 }
 ```
->Example Initial Schedle request and Interval to be removed from the intervals map
+>Example Initial Schedule request and Interval to be removed from the intervals map
 ```
   {
     "from": "2022-12-03",
