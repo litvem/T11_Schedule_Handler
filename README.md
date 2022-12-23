@@ -3,8 +3,9 @@
 ## **Descripton**
 
 
-This component is responsible for generating schedules for time intervals of interest using the opening hours of the 
-clinics and the existing bookings.
+This component is part of the Dentistimo system and it is responsible for generating schedules for time intervals of interest using the opening hours of the clinics and the existing bookings.
+
+It receives its inputs from the system's [web application](https://git.chalmers.se/courses/dit355/dit356-2022/t-11/t11-web-application) and the mongo cluster.
 
 It keeps track of the monitored time intervals so it only publishes the necessary schedules to reduce the load on the broker. To do so, the component has a map containing the time intervals that are being watched by users and updates the map accordingly.
 ## **Responsibility**
