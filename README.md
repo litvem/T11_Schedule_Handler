@@ -3,7 +3,7 @@
 ## **Descripton**
 
 
-This component is part of the Dentistimo system and it is responsible for generating schedules for time intervals of interest using the opening hours of the clinics and the existing bookings.
+This component is part of the Dentistimo system (more information [here](https://git.chalmers.se/courses/dit355/dit356-2022/t-11/t11-project)) and it is responsible for generating schedules for time intervals of interest using the opening hours of the clinics and the existing bookings.
 
 It receives its inputs from the system's [web application](https://git.chalmers.se/courses/dit355/dit356-2022/t-11/t11-web-application) and the mongo cluster.
 
