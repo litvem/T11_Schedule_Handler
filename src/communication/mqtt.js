@@ -48,28 +48,37 @@ mqttClient.on("message", (topic, message) => {
 
   switch (topic) {
     case sub_topics.initialSchedule:
-      utils.addToMap(schedules, message);
-      console.log(schedules);
+      if (validateSimpleInterval(message)) {
+        utils.addToMap(schedules, message);
+        console.log(schedules);
 
-      var interval = parseDate(message);
-      publishSchedule(interval, pub_topics.initialSchedule);
+        var interval = parseDate(message);
+        publishSchedule(interval, pub_topics.initialSchedule);
+      } else {
+        console.log("Invalid request");
+      }
       break;
 
     case sub_topics.scheduleRequest:
-      var intervals = JSON.parse(message);
+      if (validateScheduleRequest(message)) {
+        var intervals = JSON.parse(message);
 
-      var previousIntervalString = JSON.stringify(intervals.previousInterval);
-      var newIntervalString = JSON.stringify(intervals.newInterval);
+        var previousIntervalString = JSON.stringify(intervals.previousInterval);
+        var newIntervalString = JSON.stringify(intervals.newInterval);
 
-      utils.deductFromMap(schedules, previousIntervalString);
-      utils.addToMap(schedules, newIntervalString);
+        utils.deductFromMap(schedules, previousIntervalString);
+        utils.addToMap(schedules, newIntervalString);
 
-      console.log(schedules);
+        console.log(schedules);
 
-      var topic = getScheduleResponseTopic(newIntervalString);
-      var newInterval = parseDate(newIntervalString);
+        var topic = getScheduleResponseTopic(newIntervalString);
+        var newInterval = parseDate(newIntervalString);
 
-      publishSchedule(newInterval, topic);
+        publishSchedule(newInterval, topic);
+      } else {
+        console.log("Invalid request");
+      }
+
       break;
 
     case sub_topics.removeInterval:
@@ -136,6 +145,51 @@ function publishUpdatedSchedules(schedules, date) {
       var topic = getScheduleResponseTopic(key);
       publishSchedule(interval, topic);
     }
+  }
+}
+
+function validateScheduleRequest(message) {
+  try {
+    var object = JSON.parse(message);
+    var previousInterval = object.previousInterval;
+    var newInterval = object.newInterval;
+
+    if (previousInterval && newInterval) {
+      var previousFrom = new Date(previousInterval.from);
+      var previousTo = new Date(previousInterval.to);
+      var newFrom = new Date(newInterval.from);
+      var newTo = new Date(newInterval.to);
+      if (
+        !isNaN(previousFrom) &&
+        !isNaN(previousTo) &&
+        !isNaN(newFrom) &&
+        !isNaN(newTo)
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  } catch (exception) {
+    return false;
+  }
+}
+
+function validateSimpleInterval(message) {
+  try {
+    var object = JSON.parse(message);
+
+    if (object.from && object.to) {
+      var from = new Date(object.from);
+      var to = new Date(object.to);
+      if (!isNaN(from) && !isNaN(to)) {
+        return true;
+      }
+    }
+
+    return false;
+  } catch (exception) {
+    return false;
   }
 }
 

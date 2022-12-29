@@ -1,5 +1,6 @@
 const REG = /(\d{1,2})(?=\:)/g;
 const REG_SORTING = /(\d{1,2})(?=\:)/;
+const REG_BREAKES = /(\d{1,2}:\d{1,2})/g;
 const DAY = 1000 * 60 * 60 * 24; //day in milliseconds
 const BREAKES = 2;
 const WEEK_DAYS = [
@@ -24,7 +25,7 @@ function generateSchedule(dentists, bookings, interval) {
       pushDentistAvailableSlots(schedule, dentist, bookings, date);
     });
 
-    const stringDate = getStringDate(date)
+    const stringDate = getStringDate(date);
     const unsortedSchedule = Object.fromEntries(schedule);
 
     const sortedSchedule = sortTimeSlots(unsortedSchedule);
@@ -56,6 +57,12 @@ function sortTimeSlots(unsortedSchedule) {
 
 function pushDentistAvailableSlots(schedule, dentist, bookings, date) {
   var openinghours = dentist.openinghours[WEEK_DAYS[date.getDay()]];
+
+  if (dentist.breaks.coffee && dentist.breaks.lunch) {
+    var coffeeBreak = dentist.breaks.coffee;
+    var [lunchBreakFirstHalf, lunchBreakSecondHalf] = getLunchBreakes(dentist.breaks.lunch)
+  }
+
   if (openinghours) {
     var [open, close] = openinghours.match(REG);
     open = parseInt(open, 10);
@@ -77,9 +84,11 @@ function pushDentistAvailableSlots(schedule, dentist, bookings, date) {
           alreadyTaken += 1;
         }
 
-        if (String(booking.dentistid) === String(dentist._id) &&
-        booking.date.getTime() == date.getTime() &&
-        booking.time == timeHalf) {
+        if (
+          String(booking.dentistid) === String(dentist._id) &&
+          booking.date.getTime() == date.getTime() &&
+          booking.time == timeHalf
+        ) {
           alreadyTakenHalf += 1;
         }
       });
@@ -94,16 +103,29 @@ function pushDentistAvailableSlots(schedule, dentist, bookings, date) {
         slots: dentist.dentists - alreadyTakenHalf,
       };
 
-      if (schedule.has(time)) {
-        schedule.get(time).push(entry);
-      } else {
-        schedule.set(time, [entry]);
+      if (
+        time != coffeeBreak &&
+        time != lunchBreakFirstHalf &&
+        time != lunchBreakSecondHalf
+      ) {
+        if (schedule.has(time)) {
+          schedule.get(time).push(entry);
+        } else {
+          schedule.set(time, [entry]);
+        }
       }
 
-      if (schedule.has(timeHalf)) {
-        schedule.get(timeHalf).push(entryHalf);
-      } else {
-        schedule.set(timeHalf, [entryHalf]);
+
+      if (
+        timeHalf != coffeeBreak &&
+        timeHalf != lunchBreakFirstHalf &&
+        timeHalf != lunchBreakSecondHalf
+      ) {
+        if (schedule.has(timeHalf)) {
+          schedule.get(timeHalf).push(entryHalf);
+        } else {
+          schedule.set(timeHalf, [entryHalf]);
+        }
       }
     }
   }
@@ -125,6 +147,27 @@ function getStringDate(date) {
   let formatedDay = day.toString().padStart(2,0)
 
   return `${date.getFullYear()}-${formatedMonth}-${formatedDay}`;
+}
+
+function getLunchBreakes(lunchBreak) {
+  var [lunchBreakFirstHalf, lunchBreakSecondHalf] = lunchBreak.match(REG_BREAKES);
+
+    if (lunchBreakFirstHalf.charAt(3) == 0) {
+      lunchBreakSecondHalf =
+        lunchBreakFirstHalf.substring(0, 3) + "30" + "-" + lunchBreakSecondHalf;
+      lunchBreakFirstHalf =
+        lunchBreakFirstHalf + "-" + lunchBreakFirstHalf.substring(0, 3) + "30";
+    } else {
+      lunchBreakFirstHalf =
+        lunchBreakFirstHalf + "-" + lunchBreakSecondHalf.substring(0, 3) + "00";
+      lunchBreakSecondHalf =
+        lunchBreakSecondHalf.substring(0, 3) +
+        "00" +
+        "-" +
+        lunchBreakSecondHalf;
+    }
+
+    return [lunchBreakFirstHalf, lunchBreakSecondHalf]
 }
 
 module.exports = { generateSchedule };

@@ -18,6 +18,10 @@ const dentistSchema = new Schema({
     thursday: { type: String },
     friday: { type: String },
   },
+  breaks: {
+    coffee: {type: String},
+    lunch: {type: String}
+  }
 });
 
 const dentist = mongoose.model("dentists", dentistSchema)
